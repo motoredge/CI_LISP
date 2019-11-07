@@ -62,6 +62,19 @@ AST_NODE *createNumberNode(double value, NUM_TYPE type)
         yyerror("Memory allocation failed!");
 
     // TODO set the AST_NODE's type, assign values to contained NUM_AST_NODE
+    switch(node->type)
+    {
+        case INT_TYPE:
+            node->type = NUM_NODE_TYPE;
+            node->data.number.value.ival = (long) value;
+            break;
+        case DOUBLE_TYPE:
+            node->type = NUM_NODE_TYPE;
+            node->data.number.value.dval = value;
+            break;
+        default:
+            break;
+    }
 
     return node;
 }
@@ -89,6 +102,20 @@ AST_NODE *createFunctionNode(char *funcName, AST_NODE *op1, AST_NODE *op2)
     // The funcName will be a string identifier for which space should be allocated in the tokenizer.
     // For CUSTOM_OPER functions, you should simply assign the "ident" pointer to the passed in funcName.
     // For functions other than CUSTOM_OPER, you should free the funcName after you're assigned the OPER_TYPE.
+    node->data.function.oper = resolveFunc(funcName);
+    node->data.function.op1 = op1;
+    node->data.function.op2 = op2;
+
+    switch(node->type)
+    {
+        case CUSTOM_OPER:
+            node->type = CUSTOM_OPER;
+            node->data.function.ident = funcName;
+            break;
+        default:
+            free(funcName);
+            break;
+    }
 
     return node;
 }
@@ -134,12 +161,17 @@ RET_VAL eval(AST_NODE *node)
     // Use the results of those calls to populate result.
     switch (node->type)
     {
+        case FUNC_NODE_TYPE:
+            result = evalFuncNode(&node->data.function);
+            break;
+        case NUM_NODE_TYPE:
+            result = evalNumNode(&node->data.number);
         default:
             yyerror("Invalid AST_NODE_TYPE, probably invalid writes somewhere!");
     }
 
     return result;
-}  
+}
 
 // returns a pointer to the NUM_AST_NODE (aka RET_VAL) referenced by node.
 // DOES NOT allocate space for a new RET_VAL.
@@ -152,7 +184,16 @@ RET_VAL evalNumNode(NUM_AST_NODE *numNode)
 
     // TODO populate result with the values stored in the node.
     // SEE: AST_NODE, AST_NODE_TYPE, NUM_AST_NODE
-
+    switch(numNode->type)
+    {
+        case INT_TYPE:
+            result = (RET_VAL) (node->data.number);
+            break;
+        case DOUBLE_TYPE:
+            break;
+        default:
+            break;
+    }
 
     return result;
 }
