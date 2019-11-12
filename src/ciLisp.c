@@ -62,17 +62,17 @@ AST_NODE *createNumberNode(double value, NUM_TYPE type)
         yyerror("Memory allocation failed!");
 
     // TODO set the AST_NODE's type, assign values to contained NUM_AST_NODE
+    node->type = NUM_NODE_TYPE;
     switch(node->type)
     {
         case INT_TYPE:
-            node->type = NUM_NODE_TYPE;
             node->data.number.value.ival = (long) value;
             break;
         case DOUBLE_TYPE:
-            node->type = NUM_NODE_TYPE;
             node->data.number.value.dval = value;
             break;
         default:
+            yyerror("AST_NODE in createNumberNode unable to discern NUM_TYPE")
             break;
     }
 
@@ -187,11 +187,13 @@ RET_VAL evalNumNode(NUM_AST_NODE *numNode)
     switch(numNode->type)
     {
         case INT_TYPE:
-            result = (RET_VAL) (node->data.number);
+            result = (RET_VAL) (numNode->value.ival);
             break;
         case DOUBLE_TYPE:
+            result = (RET_VAL) (numNode->value.dval);
             break;
         default:
+            yyerror("ERROR IN EVALNUMNODE, POSSIBLE WRONG VALUE IN VALUE");
             break;
     }
 
@@ -208,7 +210,59 @@ RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode)
 
     // TODO populate result with the result of running the function on its operands.
     // SEE: AST_NODE, AST_NODE_TYPE, FUNC_AST_NODE
-
+    }
+    switch(funcNode->oper)
+    {
+        case NEG_OPER:
+            result = (- (funcNode->op1));
+            break;
+        case ABS_OPER:
+            result = abs(funcNode->op1);
+        case EXP_OPER:
+            result = exp(funcNode->op1);
+            break;
+        case SQRT_OPER:
+            result = sqrt(funcNode->op1);
+            break;
+        case ADD_OPER:
+            result = (funcNode->op1) + (funcNode->op2);
+            break;
+        case SUB_OPER:
+            result = (funcNode->op1) - (funcNode->op2);
+            break;
+        case MULT_OPER:
+            result = (funcNode->op1) * (funcNode->op2);
+            break;
+        case DIV_OPER:
+            result = (funcNode->op1) / (funcNode->op2);
+            break;
+        case REMAINDER_OPER:
+            result = fmod(funcNode->op1, funcNode->op2);
+            break;
+        case LOG_OPER:
+            result = log10(funcNode->op1);
+            break;
+        case POW_OPER:
+            result = pow(funcNode->op1, funcNode->op2);
+            break;
+        case MAX_OPER:
+            result = fmax(funcNode->op1, funcNode->op2);
+            break;
+        case MIN_OPER:
+            result = fmin(funcNode->op1, funcNode->op2);
+            break;
+        case EXP2_OPER:
+            result = exp2(funcNode->op1);
+            break;
+        case CBRT_OPER:
+            result = cbrt(funcNode->op1);
+            break;
+        case HYPOT_OPER:
+            result = hypot(funcNode->op1, funcNode->op2);
+            break;
+        default:
+            yyerror("IN EVALFUNCNODE, THERE IS NO CASE TO POPULATE RESULT");
+    }
 
     return result;
 }
@@ -217,4 +271,18 @@ RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode)
 void printRetVal(RET_VAL val)
 {
     // TODO print the type and value of the value passed in.
+    switch(val.type)
+    {
+        case DOUBLE_TYPE:
+            printf("%s", val.type);
+            printf("%d", val.value.dval);
+            break;
+        case INT_TYPE:
+            printf("%s", val.type);
+            printf("%l", val.value.ival);
+        default:
+            yyerror("ERROR IN PRINTRETVAL, NOT DETECTING CASE TYPE");
+            break;
+    }
+
 }
