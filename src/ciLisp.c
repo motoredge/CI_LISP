@@ -213,10 +213,10 @@ RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode)
             result = AbsOperHelp(funcNode);
             break;
         case EXP_OPER:
-            result = (RET_VAL) {op1Type, exp(op1)};
+            result = ExpOperHelp(funcNode);
             break;
         case SQRT_OPER:
-            result = (RET_VAL) {op1Type, (sqrt(op1))};
+            result = SqrtOperHelp(funcNode);
             break;
         case ADD_OPER:
             result = (RET_VAL) {op1Type, (op1 + op2)};
@@ -295,4 +295,18 @@ RET_VAL AbsOperHelp(FUNC_AST_NODE *funcNode)
     return result;
 }
 
+RET_VAL ExpOperHelp(FUNC_AST_NODE *funcNode)
+{
+    RET_VAL result = {INT_TYPE, NAN};
+    result.type = (NUM_TYPE) funcNode->op1->type;
+    result.value = exp(funcNode->op1->data.number.value);
+    return result;
+}
 
+RET_VAL SqrtOperHelp(FUNC_AST_NODE *funcNode)
+{
+    RET_VAL result = {INT_TYPE, NAN};
+    result.type = (NUM_TYPE) funcNode->op1->type;
+    result.value = sqrt(funcNode->op1->data.number.value);
+    return result;
+}
