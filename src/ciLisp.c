@@ -202,10 +202,14 @@ RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode)
 
     // TODO populate result with the result of running the function on its operands.
     // SEE: AST_NODE, AST_NODE_TYPE, FUNC_AST_NODE
+    RET_VAL op1 = eval(funcNode->op1);
+    RET_VAL op2 = eval(funcNode->op2);
     switch(funcNode->oper)
     {
         case NEG_OPER:
-            result = NegOperHelp(funcNode);
+            result.type = op1.type;
+            result.value = -(op1.value);
+            //result = NegOperHelp(funcNode);
             break;
         case ABS_OPER:
             result = AbsOperHelp(funcNode);
@@ -264,11 +268,13 @@ void printRetVal(RET_VAL val)
     // TODO print the type and value of the value passed in.
     switch(val.type)
     {
-        case DOUBLE_TYPE:
-            printf("%ld",(long) val.value);
-            break;
         case INT_TYPE:
-            printf("%lf", round(val.value));
+            printf("%.0lf", round(val.value));
+            printf(" hello");
+            break;
+        case DOUBLE_TYPE:
+            printf("%lf", (val.value));
+            printf(" bye");
             break;
         default:
             yyerror("ERROR IN PrintRetVal, NOT DETECTING CASE TYPE");
