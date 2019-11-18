@@ -62,19 +62,9 @@ AST_NODE *createNumberNode(double value, NUM_TYPE type)
         yyerror("Memory allocation failed!");
 
     // TODO set the AST_NODE's type, assign values to contained NUM_AST_NODE
-    switch(node->type)
-    {
-        case INT_TYPE:
-            node->type = NUM_NODE_TYPE;
-            node->data.number.value.ival = (long) value;
-            break;
-        case DOUBLE_TYPE:
-            node->type = NUM_NODE_TYPE;
-            node->data.number.value.dval = value;
-            break;
-        default:
-            break;
-    }
+    node->type = NUM_NODE_TYPE;
+    node->data.number.type = type;
+    node->data.number.value = value;
 
     return node;
 }
@@ -102,20 +92,21 @@ AST_NODE *createFunctionNode(char *funcName, AST_NODE *op1, AST_NODE *op2)
     // The funcName will be a string identifier for which space should be allocated in the tokenizer.
     // For CUSTOM_OPER functions, you should simply assign the "ident" pointer to the passed in funcName.
     // For functions other than CUSTOM_OPER, you should free the funcName after you're assigned the OPER_TYPE.
+    node->type = FUNC_NODE_TYPE;
     node->data.function.oper = resolveFunc(funcName);
     node->data.function.op1 = op1;
     node->data.function.op2 = op2;
 
-    switch(node->type)
-    {
-        case CUSTOM_OPER:
-            node->type = CUSTOM_OPER;
-            node->data.function.ident = funcName;
-            break;
-        default:
-            free(funcName);
-            break;
-    }
+//    switch(node->type)
+//    {
+//        case CUSTOM_OPER:
+//            node->type = CUSTOM_OPER;
+//            node->data.function.ident = funcName;
+//            break;
+//        default:
+//            free(funcName);
+//            break;
+//    }
 
     return node;
 }
@@ -187,11 +178,15 @@ RET_VAL evalNumNode(NUM_AST_NODE *numNode)
     switch(numNode->type)
     {
         case INT_TYPE:
-            result = (RET_VAL) (node->data.number);
+            result.type = INT_TYPE;
+            result.value = numNode->value;
             break;
         case DOUBLE_TYPE:
+            result.type = DOUBLE_TYPE;
+            result.value = numNode->value;
             break;
         default:
+            yyerror("ERROR IN EvalNumNode, POSSIBLE WRONG VALUE IN VALUE");
             break;
     }
 
@@ -208,8 +203,61 @@ RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode)
 
     // TODO populate result with the result of running the function on its operands.
     // SEE: AST_NODE, AST_NODE_TYPE, FUNC_AST_NODE
-
-
+    //RET_VAL op1 = eval(funcNode->op1);
+    //RET_VAL op2 = eval(funcNode->op2);
+    switch(funcNode->oper)
+    {
+        case NEG_OPER:
+            result = NegOperHelp(funcNode);
+            break;
+        case ABS_OPER:
+            result = AbsOperHelp(funcNode);
+            break;
+        case EXP_OPER:
+            result = ExpOperHelp(funcNode);
+            break;
+        case SQRT_OPER:
+            result = SqrtOperHelp(funcNode);
+            break;
+        case ADD_OPER:
+            result = AddOperHelp(funcNode);
+            break;
+        case SUB_OPER:
+            result = SubOperHelp(funcNode);
+            break;
+        case MULT_OPER:
+            result = MultOperHelp(funcNode);
+            break;
+        case DIV_OPER:
+            result = DivOperHelp(funcNode);
+            break;
+        case REMAINDER_OPER:
+            result = RemainOperHelp(funcNode);
+            break;
+        case LOG_OPER:
+            result = LogOperHelp(funcNode);
+            break;
+        case POW_OPER:
+            result = PowOperHelp(funcNode);
+            break;
+        case MAX_OPER:
+            result = MaxOperHelp(funcNode);
+            break;
+        case MIN_OPER:
+            result = MinOperHelp(funcNode);
+            break;
+        case EXP2_OPER:
+            result = Exp2OperHelp(funcNode);
+            break;
+        case CBRT_OPER:
+            result = CbrtOperHelp(funcNode);
+            break;
+        case HYPOT_OPER:
+            result = HyptOperHelp(funcNode);
+            break;
+        default:
+            yyerror("IN EvalFuncNode, THERE IS NO CASE TO POPULATE RESULT");
+    }
     return result;
 }
 
@@ -217,4 +265,331 @@ RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode)
 void printRetVal(RET_VAL val)
 {
     // TODO print the type and value of the value passed in.
+    switch(val.type)
+    {
+        case INT_TYPE:
+            printf("%.0lf", round(val.value));
+            printf(" hello");
+            break;
+        case DOUBLE_TYPE:
+            printf("%lf", (val.value));
+            printf(" bye");
+            break;
+        default:
+            yyerror("ERROR IN PrintRetVal, NOT DETECTING CASE TYPE");
+    }
+}
+
+RET_VAL NegOperHelp(FUNC_AST_NODE *funcNode)
+{
+    RET_VAL result = {INT_TYPE, NAN};
+    result.type = funcNode->op1->data.number.type;
+    result.value = -(funcNode->op1->data.number.value);
+    return result;
+}
+
+RET_VAL AbsOperHelp(FUNC_AST_NODE *funcNode)
+{
+    RET_VAL result = {INT_TYPE, NAN};
+    result.type = funcNode->op1->data.number.type;
+    result.value = fabs(funcNode->op1->data.number.value);
+    return result;
+}
+
+RET_VAL ExpOperHelp(FUNC_AST_NODE *funcNode)
+{
+    RET_VAL result = {INT_TYPE, NAN};
+    result.type = funcNode->op1->data.number.type;
+    result.value = exp(funcNode->op1->data.number.value);
+    return result;
+}
+
+RET_VAL SqrtOperHelp(FUNC_AST_NODE *funcNode)
+{
+    RET_VAL result = {INT_TYPE, NAN};
+    result.type = funcNode->op1->data.number.type;
+    result.value = sqrt(funcNode->op1->data.number.value);
+    return result;
+}
+
+RET_VAL AddOperHelp(FUNC_AST_NODE *funcNode)
+{
+    RET_VAL result = {INT_TYPE, NAN};
+    if(funcNode->op1->type == INT_TYPE && funcNode->op2->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = ((funcNode->op1->data.number.value) + (funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == INT_TYPE && funcNode->op2->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = ((funcNode->op1->data.number.value) + (funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE && funcNode->op2->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = ((funcNode->op1->data.number.value) + (funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE && funcNode->op2->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = ((funcNode->op1->data.number.value) + (funcNode->op2->data.number.value));
+    }
+    return result;
+}
+
+RET_VAL SubOperHelp(FUNC_AST_NODE *funcNode)
+{
+    RET_VAL result = {INT_TYPE, NAN};
+    if(funcNode->op1->type == INT_TYPE && funcNode->op2->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = ((funcNode->op1->data.number.value) - (funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == INT_TYPE && funcNode->op2->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op2->data.number.type;
+        result.value = ((funcNode->op1->data.number.value) - (funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE && funcNode->op2->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = ((funcNode->op1->data.number.value) - (funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE && funcNode->op2->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = ((funcNode->op1->data.number.value) - (funcNode->op2->data.number.value));
+    }
+    return result;
+}
+
+RET_VAL MultOperHelp(FUNC_AST_NODE *funcNode)
+{
+    RET_VAL result = {INT_TYPE, NAN};
+    if(funcNode->op1->type == INT_TYPE && funcNode->op2->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = ((funcNode->op1->data.number.value) * (funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == INT_TYPE && funcNode->op2->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op2->data.number.type;
+        result.value = ((funcNode->op1->data.number.value) * (funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE && funcNode->op2->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = ((funcNode->op1->data.number.value) * (funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE && funcNode->op2->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = ((funcNode->op1->data.number.value) * (funcNode->op2->data.number.value));
+    }
+    return result;
+}
+
+RET_VAL DivOperHelp(FUNC_AST_NODE *funcNode)
+{
+    RET_VAL result = {INT_TYPE, NAN};
+    if(funcNode->op1->type == INT_TYPE && funcNode->op2->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = ((funcNode->op1->data.number.value) / (funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == INT_TYPE && funcNode->op2->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op2->data.number.type;
+        result.value = ((funcNode->op1->data.number.value) / (funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE && funcNode->op2->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = ((funcNode->op1->data.number.value) / (funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE && funcNode->op2->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = ((funcNode->op1->data.number.value) / (funcNode->op2->data.number.value));
+    }
+    return result;
+}
+
+RET_VAL RemainOperHelp(FUNC_AST_NODE *funcNode)
+{
+    RET_VAL result = {INT_TYPE, NAN};
+    if(funcNode->op1->type == INT_TYPE && funcNode->op2->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = fmod((funcNode->op1->data.number.value),(funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == INT_TYPE && funcNode->op2->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op2->data.number.type;
+        result.value = fmod((funcNode->op1->data.number.value),(funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE && funcNode->op2->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = fmod((funcNode->op1->data.number.value),(funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE && funcNode->op2->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = fmod((funcNode->op1->data.number.value),(funcNode->op2->data.number.value));
+    }
+    return result;
+}
+
+RET_VAL LogOperHelp(FUNC_AST_NODE *funcNode)
+{
+    RET_VAL result = {INT_TYPE, NAN};
+    if(funcNode->op1->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = log((funcNode->op1->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = log((funcNode->op1->data.number.value));
+    }
+    return result;
+}
+
+RET_VAL PowOperHelp(FUNC_AST_NODE *funcNode)
+{
+    RET_VAL result = {INT_TYPE, NAN};
+    if(funcNode->op1->type == INT_TYPE && funcNode->op2->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = pow((funcNode->op1->data.number.value),(funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == INT_TYPE && funcNode->op2->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op2->data.number.type;
+        result.value = pow((funcNode->op1->data.number.value),(funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE && funcNode->op2->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = pow((funcNode->op1->data.number.value),(funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE && funcNode->op2->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = pow((funcNode->op1->data.number.value),(funcNode->op2->data.number.value));
+    }
+    return result;
+}
+
+RET_VAL MaxOperHelp(FUNC_AST_NODE *funcNode)
+{
+    RET_VAL result = {INT_TYPE, NAN};
+    if(funcNode->op1->type == INT_TYPE && funcNode->op2->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = fmax((funcNode->op1->data.number.value),(funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == INT_TYPE && funcNode->op2->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op2->data.number.type;
+        result.value = fmax((funcNode->op1->data.number.value),(funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE && funcNode->op2->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = fmax((funcNode->op1->data.number.value),(funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE && funcNode->op2->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = fmax((funcNode->op1->data.number.value),(funcNode->op2->data.number.value));
+    }
+    return result;
+}
+
+RET_VAL MinOperHelp(FUNC_AST_NODE *funcNode)
+{
+    RET_VAL result = {INT_TYPE, NAN};
+    if(funcNode->op1->type == INT_TYPE && funcNode->op2->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = fmin((funcNode->op1->data.number.value),(funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == INT_TYPE && funcNode->op2->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op2->data.number.type;
+        result.value = fmin((funcNode->op1->data.number.value),(funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE && funcNode->op2->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = fmin((funcNode->op1->data.number.value),(funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE && funcNode->op2->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = fmin((funcNode->op1->data.number.value),(funcNode->op2->data.number.value));
+    }
+    return result;
+}
+
+RET_VAL Exp2OperHelp(FUNC_AST_NODE *funcNode)
+{
+    RET_VAL result = {INT_TYPE, NAN};
+    if(funcNode->op1->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = exp2((funcNode->op1->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = exp2((funcNode->op1->data.number.value));
+    }
+    return result;
+}
+
+RET_VAL CbrtOperHelp(FUNC_AST_NODE *funcNode)
+{
+    RET_VAL result = {INT_TYPE, NAN};
+    if(funcNode->op1->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = cbrt((funcNode->op1->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = cbrt((funcNode->op1->data.number.value));
+    }
+    return result;
+}
+
+RET_VAL HyptOperHelp(FUNC_AST_NODE *funcNode)
+{
+    RET_VAL result = {INT_TYPE, NAN};
+    if(funcNode->op1->type == INT_TYPE && funcNode->op2->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = hypot((funcNode->op1->data.number.value),(funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == INT_TYPE && funcNode->op2->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op2->data.number.type;
+        result.value = hypot((funcNode->op1->data.number.value),(funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE && funcNode->op2->type == INT_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = hypot((funcNode->op1->data.number.value),(funcNode->op2->data.number.value));
+    }
+    if(funcNode->op1->type == DOUBLE_TYPE && funcNode->op2->type == DOUBLE_TYPE)
+    {
+        result.type = funcNode->op1->data.number.type;
+        result.value = hypot((funcNode->op1->data.number.value),(funcNode->op2->data.number.value));
+    }
+    return result;
 }
