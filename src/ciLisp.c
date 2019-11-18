@@ -269,11 +269,9 @@ void printRetVal(RET_VAL val)
     {
         case INT_TYPE:
             printf("%.0lf", round(val.value));
-            printf(" hello");
             break;
         case DOUBLE_TYPE:
             printf("%lf", (val.value));
-            printf(" bye");
             break;
         default:
             yyerror("ERROR IN PrintRetVal, NOT DETECTING CASE TYPE");
