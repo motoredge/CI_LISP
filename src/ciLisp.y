@@ -8,7 +8,7 @@
     struct ast_node *astNode;
 };
 
-%token <sval> FUNC
+%token <sval> FUNC, SYMBOL
 %token <dval> INT, DOUBLE
 %token LPAREN RPAREN EOL QUIT
 
@@ -41,6 +41,33 @@ s_expr:
         fprintf(stderr, "yacc: s_expr ::= error\n");
         yyerror("unexpected token");
         $$ = NULL;
+    }
+    | SYMBOL {
+        $$ = $1;
+    }
+    | LPAREN let_section s_expr RPAREN {
+        $$ = $3;
+    };
+
+let_section :
+    <empty> {
+
+    }
+    | ( let_list ) {
+        $$=$2;
+    };
+
+let_list :
+    let let_elem {
+        $$=$2;
+    }
+    | let_list let_element {
+        $$=$2;
+    };
+
+let_element :
+    LPAREN symbol s_expr RPAREN {
+        $$=$2
     };
 
 number:

@@ -9,6 +9,8 @@
 digit [0-9]
 int [+-]?{digit}+
 double [+-]?{digit}+\.{digit}*
+letter [a-zA-Z]
+symbol {letter}+
 func "neg"|"abs"|"exp"|"sqrt"|"add"|"sub"|"mult"|"div"|"remainder"|"log"|"pow"|"max"|"min"
 
 %%
@@ -23,6 +25,13 @@ func "neg"|"abs"|"exp"|"sqrt"|"add"|"sub"|"mult"|"div"|"remainder"|"log"|"pow"|"
     yylval.dval = strtod(yytext, NULL);
     fprintf(stderr, "lex: DOUBLE dval = %lf\n", yylval.dval);
     return DOUBLE;
+}
+
+{symbol} {
+    yylval.sval = (char *) malloc(strlen(yytext)*sizeof(char)+1);
+    strcpy(yylval.sval, yytext);
+    fprintf(stderr, "lex: LETTER sval = %s\n", yylval.sval);
+    return SYMBOL;
 }
 
 "quit" {
@@ -65,7 +74,7 @@ func "neg"|"abs"|"exp"|"sqrt"|"add"|"sub"|"mult"|"div"|"remainder"|"log"|"pow"|"
  */
 int main(void) {
 
-    //   freopen("/dev/null", "w", stderr); // except for this line that can be uncommented to throw away debug printouts
+       freopen("/dev/null", "w", stderr); // except for this line that can be uncommented to throw away debug printouts
 
     char *s_expr_str = NULL;
     size_t s_expr_str_len = 0;
