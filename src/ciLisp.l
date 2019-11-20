@@ -34,6 +34,10 @@ func "neg"|"abs"|"exp"|"sqrt"|"add"|"sub"|"mult"|"div"|"remainder"|"log"|"pow"|"
     return SYMBOL;
 }
 
+"let" {
+    return LET;
+}
+
 "quit" {
     return QUIT;
     }

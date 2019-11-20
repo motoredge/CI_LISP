@@ -46,19 +46,14 @@ typedef enum oper {
 
 OPER_TYPE resolveFunc(char *);
 
-//A node that stores ident, value of symbol, and the next symbol in the linked list
-typedef struct symbol_table_node {
-    char *ident;
-    struct ast_node *val;
-    struct symbol_table_node *next;
-} SYMBOL_TABLE_NODE;
-
 // Types of Abstract Syntax Tree nodes.
 // Initially, there are only numbers and functions.
 // You will expand this enum as you build the project.
 typedef enum {
     NUM_NODE_TYPE,
-    FUNC_NODE_TYPE
+    FUNC_NODE_TYPE,
+    SYM_NODE_TYPE,
+    SYM_TABLE_NODE_TYPE
 } AST_NODE_TYPE;
 
 // Types of numeric values
@@ -66,6 +61,13 @@ typedef enum {
     INT_TYPE,
     DOUBLE_TYPE
 } NUM_TYPE;
+
+//A node that stores ident, value of symbol, and the next symbol in the linked list
+typedef struct symbol_table_node {
+    char *ident;
+    struct ast_node *val;
+    struct symbol_table_node *next;
+} SYMBOL_TABLE_NODE;
 
 // Node to store a number.
 typedef struct {
@@ -107,11 +109,17 @@ AST_NODE *createNumberNode(double value, NUM_TYPE type);
 
 AST_NODE *createFunctionNode(char *funcName, AST_NODE *op1, AST_NODE *op2);
 
+AST_NODE *createSymbolNode(char *ident);
+
+AST_NODE *createSymbolTableNode(char *ident, AST_NODE *val, SYMBOL_TABLE_NODE *next);
+
 void freeNode(AST_NODE *node);
 
 RET_VAL eval(AST_NODE *node);
 RET_VAL evalNumNode(NUM_AST_NODE *numNode);
 RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode);
+RET_VAL evalSymbNode(SYMBOL_AST_NODE *symNode);
+RET_VAL evalSymTabNode(SYMBOL_TABLE_NODE *symtabNode);
 
 void printRetVal(RET_VAL val);
 RET_VAL NegOperHelp(FUNC_AST_NODE *funcNode);
