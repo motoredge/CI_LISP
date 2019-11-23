@@ -62,12 +62,12 @@ let_list :
         $$=$2;
     }
     | let_list let_element {
-        creatSymbolTableNode($1,$2,NULL);
+        createSymbolTableNode($1,$2,NULL);
     };
 
 let_element :
     LPAREN symbol s_expr RPAREN {
-        createSymbolTableNode($2,$3, NULL);
+        createSymbolTableNode($2,$3,NULL);
     };
 
 number:
