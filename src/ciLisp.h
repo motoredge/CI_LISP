@@ -113,6 +113,8 @@ AST_NODE *createSymbolNode(char *ident);
 
 AST_NODE *createSymbolTableNode(char *ident, AST_NODE *val, SYMBOL_TABLE_NODE *next);
 
+AST_NODE *setSymbolTable(SYMBOL_TABLE_NODE *symTab, AST_NODE *parent);
+
 void freeNode(AST_NODE *node);
 
 RET_VAL eval(AST_NODE *node);

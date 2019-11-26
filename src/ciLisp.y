@@ -6,13 +6,16 @@
     double dval;
     char *sval;
     struct ast_node *astNode;
+    struct symbol_table_node *symTabNode;
 };
 
-%token <sval> FUNC, SYMBOL
-%token <dval> INT, DOUBLE
-%token LPAREN RPAREN EOL QUIT
+
+%token <sval> FUNC SYMBOL
+%token <dval> INT DOUBLE
+%token LPAREN RPAREN EOL LET QUIT
 
 %type <astNode> s_expr f_expr number
+%type <symTabNode> let_section let_list let_element
 
 %%
 
@@ -43,30 +46,27 @@ s_expr:
         $$ = NULL;
     }
     | SYMBOL {
-        $$ = $1;
+        $$ = createSymbolNode($1);
     }
     | LPAREN let_section s_expr RPAREN {
-        $$ = $3;
+        $$ = setSymbolTable($2, $3);
     };
 
 let_section :
-    <empty> {
-
-    }
-    | ( let_list ) {
+     LPAREN let_list RPAREN {
         $$=$2;
     };
 
 let_list :
-    let let_elem {
+    LET let_element {
         $$=$2;
     }
     | let_list let_element {
-        creatSymbolTableNode($1,$2,NULL);
+        createSymbolTableNode($1,$2,NULL);
     };
 
 let_element :
-    LPAREN symbol s_expr RPAREN {
+    LPAREN SYMBOL s_expr RPAREN {
         createSymbolTableNode($2,$3, NULL);
     };
 
