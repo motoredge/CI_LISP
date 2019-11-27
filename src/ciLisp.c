@@ -110,6 +110,56 @@ AST_NODE *createFunctionNode(char *funcName, AST_NODE *op1, AST_NODE *op2)
     return node;
 }
 
+AST_NODE *createSymbolNode(char *ident)
+{
+    AST_NODE *node;
+    size_t nodeSize;
+
+    // allocate space (or error)
+    nodeSize = sizeof(AST_NODE);
+    if ((node = calloc(nodeSize, 1)) == NULL)
+        yyerror("Memory allocation failed!");
+
+    node->type = SYM_NODE_TYPE;
+    node->data.symbol.ident = ident;
+
+    return node;
+}
+
+
+AST_NODE *createSymbolTableNode(char *ident, AST_NODE *val, SYMBOL_TABLE_NODE *next)
+{
+    AST_NODE *node;
+    size_t nodeSize;
+
+    // allocate space (or error)
+    nodeSize = sizeof(AST_NODE);
+    if ((node = calloc(nodeSize, 1)) == NULL)
+        yyerror("Memory allocation failed!");
+
+    node->type = SYM_TABLE_NODE_TYPE;
+    node->symbolTable->ident = ident;
+    node->symbolTable->val = val;
+    node->symbolTable->next = next;
+
+    return node;
+}
+
+//check function
+AST_NODE *setSymbolTable(SYMBOL_TABLE_NODE *let_list, AST_NODE *let_element)
+{
+    SYMBOL_TABLE_NODE **scope = &(let_element)->symbolTable;
+
+    if(*scope != NULL)
+    {
+        scope = &(*scope)->next;
+    }
+
+    scope = *let_list;
+
+    return scope;
+}
+
 // Called after execution is done on the base of the tree.
 // (see the program production in ciLisp.y)
 // Recursively frees the whole abstract syntax tree.
@@ -257,6 +307,11 @@ RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode)
             yyerror("IN EvalFuncNode, THERE IS NO CASE TO POPULATE RESULT");
     }
     return result;
+}
+
+SYMBOL_AST_NODE addSymbNode(SYMBOL_AST_NODE *symNode)
+{
+
 }
 
 // prints the type and value of a RET_VAL

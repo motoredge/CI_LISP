@@ -46,27 +46,34 @@ s_expr:
         $$ = NULL;
     }
     | SYMBOL {
+        fprintf(stderr, "yacc: s_expr ::= symbol\n");
+        yyerror("unexpected token");
         $$ = createSymbolNode($1);
     }
     | LPAREN let_section s_expr RPAREN {
+        fprintf(stderr, "yacc: s_expr ::= LPAREN let_section s_expr RPAREN\n");
         $$ = setSymbolTable($2, $3);
     };
 
 let_section :
      LPAREN let_list RPAREN {
+        fprintf(stderr, "yacc: s_expr ::= LPAREN let_list RPAREN\n");
         $$=$2;
     };
 
 let_list :
     LET let_element {
+        fprintf(stderr, "yacc: s_expr ::= LPAREN FUNC expr RPAREN\n");
         $$=$2;
     }
     | let_list let_element {
+        fprintf(stderr, "yacc: s_expr ::= let_list let_element\n");
         createSymbolTableNode($1,$2,NULL);
     };
 
 let_element :
     LPAREN SYMBOL s_expr RPAREN {
+        fprintf(stderr, "yacc: s_expr ::= LPAREN symbol s_expr RPAREN\n");
         createSymbolTableNode($2,$3, NULL);
     };
 
