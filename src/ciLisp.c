@@ -309,7 +309,7 @@ RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode)
     return result;
 }
 
-SYMBOL_AST_NODE addSymbNode(SYMBOL_AST_NODE *symNode)
+SYMBOL_TABLE_NODE addSymbTabNode(SYMBOL_TABLE_NODE *symbolTableNode)
 {
 
 }

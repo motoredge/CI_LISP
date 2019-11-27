@@ -120,7 +120,6 @@ void freeNode(AST_NODE *node);
 RET_VAL eval(AST_NODE *node);
 RET_VAL evalNumNode(NUM_AST_NODE *numNode);
 RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode);
-RET_VAL addSymbNode(SYMBOL_AST_NODE *symNode);
 RET_VAL addSymTabNode(SYMBOL_TABLE_NODE *symtabNode);
 
 void printRetVal(RET_VAL val);
