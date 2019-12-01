@@ -40,22 +40,26 @@
       know about them.  */
    enum yytokentype {
      FUNC = 258,
-     INT = 259,
-     DOUBLE = 260,
-     LPAREN = 261,
-     RPAREN = 262,
-     EOL = 263,
-     QUIT = 264
+     SYMBOL = 259,
+     INT = 260,
+     DOUBLE = 261,
+     LPAREN = 262,
+     RPAREN = 263,
+     EOL = 264,
+     LET = 265,
+     QUIT = 266
    };
 #endif
 /* Tokens.  */
 #define FUNC 258
-#define INT 259
-#define DOUBLE 260
-#define LPAREN 261
-#define RPAREN 262
-#define EOL 263
-#define QUIT 264
+#define SYMBOL 259
+#define INT 260
+#define DOUBLE 261
+#define LPAREN 262
+#define RPAREN 263
+#define EOL 264
+#define LET 265
+#define QUIT 266
 
 
 
@@ -67,9 +71,10 @@ typedef union YYSTYPE
     double dval;
     char *sval;
     struct ast_node *astNode;
+    struct symbol_table_node *symTabNode;
 }
 /* Line 1529 of yacc.c.  */
-#line 73 "/Users/edgar.ramirez136/CLionProjects/CI_LISP/cmake-build-debug/ciLispParser.h"
+#line 78 "/Users/edgar.ramirez136/CLionProjects/CI_LISP/cmake-build-debug/ciLispParser.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
