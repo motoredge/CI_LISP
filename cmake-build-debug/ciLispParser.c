@@ -125,7 +125,7 @@ typedef union YYSTYPE
     struct symbol_table_node *symTabNode;
 }
 /* Line 193 of yacc.c.  */
-#line 129 "/Users/edgar.ramirez136/CLionProjects/CI_LISP/cmake-build-debug/ciLispParser.c"
+#line 129 "/Users/edgar/CLionProjects/CI_LISP/cmake-build-debug/ciLispParser.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -138,7 +138,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 142 "/Users/edgar.ramirez136/CLionProjects/CI_LISP/cmake-build-debug/ciLispParser.c"
+#line 142 "/Users/edgar/CLionProjects/CI_LISP/cmake-build-debug/ciLispParser.c"
 
 #ifdef short
 # undef short
@@ -1474,7 +1474,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 1478 "/Users/edgar.ramirez136/CLionProjects/CI_LISP/cmake-build-debug/ciLispParser.c"
+#line 1478 "/Users/edgar/CLionProjects/CI_LISP/cmake-build-debug/ciLispParser.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);

@@ -129,7 +129,7 @@ AST_NODE *createSymbolTableNode(char *ident, AST_NODE *val, SYMBOL_TABLE_NODE *n
     if ((node = calloc(nodeSize, 1)) == NULL)
         yyerror("Memory allocation failed!");
 
-    node->type = SYM_TABLE_NODE_TYPE;
+    node->type = SYM_NODE_TYPE;
     node->symbolTable->ident = ident;
     node->symbolTable->val = val;
     node->symbolTable->next = next;
@@ -216,7 +216,11 @@ RET_VAL eval(AST_NODE *node)
 RET_VAL evalSymNode(AST_NODE *node)
 {
     if (!node)
-        return (RET_VAL){INT_TYPE, NAN};
+        return (RET_VAL){SYM_NODE_TYPE, NAN};
+    RET_VAL result = {SYM_NODE_TYPE, NAN};
+
+
+    return result;
 
 }
 
