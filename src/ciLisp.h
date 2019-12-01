@@ -94,7 +94,7 @@ typedef struct symbol_ast_node {
 // Generic Abstract Syntax Tree node. Stores the type of node,
 // and reference to the corresponding specific node (a number, function call, or symbol).
 typedef struct ast_node {
-    AST_NODE_TYPE xtype;
+    AST_NODE_TYPE type;
     SYMBOL_TABLE_NODE *symbolTable;
     struct ast_node *parent;
     union {
