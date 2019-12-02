@@ -74,7 +74,7 @@ let_list :
 let_element :
     LPAREN SYMBOL s_expr RPAREN {
         fprintf(stderr, "yacc: let_element ::= LPAREN SYMBOL s_expr RPAREN\n");
-        createSymbolTableNode($2,$3, NULL);
+        $$ = createSymbolTableNode($2,$3);
     };
 
 number:

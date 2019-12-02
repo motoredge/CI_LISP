@@ -119,22 +119,17 @@ AST_NODE *createSymbolNode(char *ident)
 }
 
 
-AST_NODE *createSymbolTableNode(char *ident, AST_NODE *val, SYMBOL_TABLE_NODE *next)
+SYMBOL_TABLE_NODE *createSymbolTableNode(char *ident, AST_NODE *val)
 {
-    AST_NODE *node;
-    size_t nodeSize;
+    SYMBOL_TABLE_NODE *symTabNode = calloc(1, sizeof(SYMBOL_TABLE_NODE));
+    if(symTabNode == NULL)
+    {
+        exit(EXIT_FAILURE+1);
+    }
+    symTabNode->ident = ident;
+    symTabNode->val = val;
 
-    // allocate space (or error)
-    nodeSize = sizeof(AST_NODE);
-    if ((node = calloc(nodeSize, 1)) == NULL)
-        yyerror("Memory allocation failed!");
-
-    node->type = SYM_TABLE_NODE_TYPE;
-    node->symbolTable->ident = ident;
-    node->symbolTable->val = val;
-    node->symbolTable->next = next;
-
-    return node;
+    return  symTabNode;
 }
 
 //check function
@@ -153,9 +148,14 @@ SYMBOL_TABLE_NODE *addSymbolToList(SYMBOL_TABLE_NODE *let_list, SYMBOL_TABLE_NOD
     if(let_list == NULL)
         return let_element;
 
-    let_element->next = let_list;
+    SYMBOL_TABLE_NODE *iter = let_list;
+    while (iter->next != NULL)
+    {
+        iter = iter->next;
+    }
+    iter->next = let_element;
 
-    return let_element;
+    return let_list;
 }
 // Called after execution is done on the base of the tree.
 // (see the program production in ciLisp.y)
@@ -217,6 +217,17 @@ RET_VAL evalSymNode(AST_NODE *node)
 {
     if (!node)
         return (RET_VAL){INT_TYPE, NAN};
+
+    SYMBOL_TABLE_NODE *iter = findSymbol(node->data.symbol.ident, node);
+
+    if(iter == NULL)
+    {
+        printf("ERROR");
+        return (RET_VAL) {INT_TYPE, NAN};
+    }
+
+     RET_VAL result = eval(iter->val);
+     return result;
 
 }
 
@@ -315,6 +326,24 @@ RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode)
     return result;
 }
 
+SYMBOL_TABLE_NODE * findSymbol(char *ident, AST_NODE *symNode)
+{
+    if(symNode == NULL)
+        return NULL;
+
+    SYMBOL_TABLE_NODE *iter = symNode->symbolTable;
+
+    while(iter!= NULL)
+    {
+        if(strcmp(ident, iter->ident) == 0)
+        {
+            return iter;
+        }
+     iter = iter->next;
+    }
+
+    return findSymbol(ident, symNode->parent);
+}
 
 // prints the type and value of a RET_VAL
 void printRetVal(RET_VAL val)

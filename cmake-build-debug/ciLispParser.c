@@ -1428,7 +1428,7 @@ yyreduce:
 #line 75 "src/ciLisp.y"
     {
         fprintf(stderr, "yacc: let_element ::= LPAREN SYMBOL s_expr RPAREN\n");
-        createSymbolTableNode((yyvsp[(2) - (4)].sval),(yyvsp[(3) - (4)].astNode), NULL);
+        (yyval.symTabNode) = createSymbolTableNode((yyvsp[(2) - (4)].sval),(yyvsp[(3) - (4)].astNode));
     ;}
     break;
 
