@@ -63,6 +63,7 @@ typedef enum {
 
 //A node that stores ident, value of symbol, and the next symbol in the linked list
 typedef struct symbol_table_node {
+    NUM_TYPE val_type;
     char *ident;
     struct ast_node *val;
     struct symbol_table_node *next;
@@ -78,6 +79,7 @@ typedef struct {
 // They have the same structure as a NUM_AST_NODE.
 // The line below allows us to give this struct another name for readability.
 typedef NUM_AST_NODE RET_VAL;
+
 
 // Node to store a function call with its inputs
 typedef struct {

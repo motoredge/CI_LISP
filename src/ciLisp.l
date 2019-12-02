@@ -8,32 +8,45 @@
 
 digit [0-9]
 letter [a-zA-Z]
-int [+-]?{digit}+
-double [+-]?{digit}+\.{digit}*
+int_literal [+-]?{digit}+
+double_literal [+-]?{digit}+\.{digit}*
 symbol {letter}+
+type int_literal | double_literal
 func "neg"|"abs"|"exp"|"sqrt"|"add"|"sub"|"mult"|"div"|"remainder"|"log"|"pow"|"max"|"min"
 
 %%
 
-{int} {
+{int_literal} {
     yylval.dval = strtod(yytext, NULL);
     fprintf(stderr, "lex: INT dval = %lf\n", yylval.dval);
-    return INT;
+    return INT_LITERAL;
 }
 
-{double} {
+{double_literal} {
     yylval.dval = strtod(yytext, NULL);
     fprintf(stderr, "lex: DOUBLE dval = %lf\n", yylval.dval);
-    return DOUBLE;
+    return DOUBLE_LITERAL;
 }
 
 "let" {
+    fprintf(stderr, "lex: LET\n");
     return LET;
 }
 
 "quit" {
+    fprintf(stderr, "lex: QUIT\n");
     return QUIT;
     }
+
+"int" {
+      fprintf(stderr, "lex: INT\n");
+      return INT;
+      }
+
+"double" {
+     fprintf(stderr, "lex: DOUBLE\n");
+     return DOUBLE;
+     }
 
 {func} {
     yylval.sval = (char *) malloc(strlen(yytext)*sizeof(char)+1);
