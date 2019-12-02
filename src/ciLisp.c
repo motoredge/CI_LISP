@@ -69,13 +69,14 @@ AST_NODE *createNumberNode(double value, NUM_TYPE type)
     return node;
 }
 
-// Called when an f_expr is created (see ciLisp.y).
-// Creates an AST_NODE for a function call.
-// Sets the created AST_NODE's type to function.
-// Populates the contained FUNC_AST_NODE with:
-//      - An OPER_TYPE (the enum identifying the specific function being called)
-//      - 2 AST_NODEs, the operands
-// SEE: AST_NODE, FUNC_AST_NODE, AST_NODE_TYPE.
+
+void setParent(AST_NODE *parent, AST_NODE *child)
+{
+    if(child != NULL)
+        child->parent = parent;
+}
+
+
 AST_NODE *createFunctionNode(char *funcName, AST_NODE *op1, AST_NODE *op2)
 {
     AST_NODE *node;
@@ -96,17 +97,8 @@ AST_NODE *createFunctionNode(char *funcName, AST_NODE *op1, AST_NODE *op2)
     node->data.function.oper = resolveFunc(funcName);
     node->data.function.op1 = op1;
     node->data.function.op2 = op2;
-//    switch(node->type)
-//    {
-//        case CUSTOM_OPER:
-//            node->type = CUSTOM_OPER;
-//            node->data.function.ident = funcName;
-//            break;
-//        default:
-//            free(funcName);
-//            break;
-//    }
-
+    setParent(node, op1);
+    setParent(node, op2);
     return node;
 }
 
@@ -146,20 +138,25 @@ AST_NODE *createSymbolTableNode(char *ident, AST_NODE *val, SYMBOL_TABLE_NODE *n
 }
 
 //check function
-AST_NODE *setSymbolTable(SYMBOL_TABLE_NODE *let_list, AST_NODE *let_element)
+AST_NODE *setSymbolTable(SYMBOL_TABLE_NODE *symbolTable, AST_NODE * node)
 {
-    SYMBOL_TABLE_NODE **scope = &(let_element)->symbolTable;
-
+    SYMBOL_TABLE_NODE **scope = &(node->symbolTable);
     if(*scope != NULL)
-    {
-        scope = &(*scope)->next;
-    }
+        scope = &((**scope).next);
+    *scope = symbolTable;
 
-    scope = *let_list;
-
-    return scope;
+    return node;
 }
 
+SYMBOL_TABLE_NODE *addSymbolToList(SYMBOL_TABLE_NODE *let_list, SYMBOL_TABLE_NODE *let_element)
+{
+    if(let_list == NULL)
+        return let_element;
+
+    let_element->next = let_list;
+
+    return let_element;
+}
 // Called after execution is done on the base of the tree.
 // (see the program production in ciLisp.y)
 // Recursively frees the whole abstract syntax tree.
@@ -207,11 +204,20 @@ RET_VAL eval(AST_NODE *node)
         case NUM_NODE_TYPE:
             result = evalNumNode(&node->data.number);
             break;
+        case SYM_NODE_TYPE:
+            result = evalSymNode(node);
         default:
             yyerror("Invalid AST_NODE_TYPE, probably invalid writes somewhere!");
     }
 
     return result;
+}
+
+RET_VAL evalSymNode(AST_NODE *node)
+{
+    if (!node)
+        return (RET_VAL){INT_TYPE, NAN};
+
 }
 
 // returns a pointer to the NUM_AST_NODE (aka RET_VAL) referenced by node.
@@ -309,10 +315,6 @@ RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode)
     return result;
 }
 
-SYMBOL_TABLE_NODE addSymbTabNode(SYMBOL_TABLE_NODE *symbolTableNode)
-{
-
-}
 
 // prints the type and value of a RET_VAL
 void printRetVal(RET_VAL val)
