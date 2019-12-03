@@ -119,17 +119,21 @@ AST_NODE *createSymbolNode(char *ident)
 }
 
 
-SYMBOL_TABLE_NODE *createSymbolTableNode(char *ident, AST_NODE *val)
+SYMBOL_TABLE_NODE *createSymbolTableNode(char *ident, AST_NODE *val, NUM_TYPE typeNum)
 {
     SYMBOL_TABLE_NODE *symTabNode = calloc(1, sizeof(SYMBOL_TABLE_NODE));
     if(symTabNode == NULL)
     {
         exit(EXIT_FAILURE+1);
     }
+    if(typeNum == false) {
+        symTabNode->val_type = DOUBLE_TYPE;
+    }
+    symTabNode->val_type = typeNum;
     symTabNode->ident = ident;
     symTabNode->val = val;
 
-    return  symTabNode;
+    return symTabNode;
 }
 
 //check function

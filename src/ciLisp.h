@@ -110,7 +110,7 @@ AST_NODE *createNumberNode(double value, NUM_TYPE type);
 AST_NODE *createFunctionNode(char *funcName, AST_NODE *op1, AST_NODE *op2);
 AST_NODE *createSymbolNode(char *ident);
 
-SYMBOL_TABLE_NODE *createSymbolTableNode(char *ident, AST_NODE *val);
+SYMBOL_TABLE_NODE *createSymbolTableNode(char *ident, AST_NODE *val, NUM_TYPE typeNum);
 AST_NODE *setSymbolTable(SYMBOL_TABLE_NODE *, AST_NODE *);
 
 SYMBOL_TABLE_NODE *addSymbolToList (SYMBOL_TABLE_NODE *let_list, SYMBOL_TABLE_NODE *let_element);

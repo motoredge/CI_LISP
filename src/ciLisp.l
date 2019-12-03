@@ -11,7 +11,6 @@ letter [a-zA-Z]
 int_literal [+-]?{digit}+
 double_literal [+-]?{digit}+\.{digit}*
 symbol {letter}+
-type int_literal | double_literal
 func "neg"|"abs"|"exp"|"sqrt"|"add"|"sub"|"mult"|"div"|"remainder"|"log"|"pow"|"max"|"min"
 
 %%
