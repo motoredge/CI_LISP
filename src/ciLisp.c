@@ -338,7 +338,7 @@ RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode)
             result = HyptOperHelp(funcNode);
             break;
         case PRINT_OPER:
-
+            result.value = eval(funcNode->op1).value;
             break;
         default:
             yyerror("IN EvalFuncNode, THERE IS NO CASE TO POPULATE RESULT");
@@ -593,7 +593,7 @@ RET_VAL CbrtOperHelp(FUNC_AST_NODE *funcNode)
     RET_VAL result = {INT_TYPE, NAN};
     RET_VAL op1 = eval(funcNode->op1);
     result.type = op1.type;
-    result.value = sqrt(op1.value);
+    result.value = cbrt(op1.value);
     return result;
 }
 
