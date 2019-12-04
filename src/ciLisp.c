@@ -1,3 +1,6 @@
+//CiLisp
+//Edgar Ramirez
+
 #include "ciLisp.h"
 
 void yyerror(char *s) {
@@ -126,9 +129,9 @@ SYMBOL_TABLE_NODE *createSymbolTableNode(char *ident, AST_NODE *val, NUM_TYPE ty
     {
         exit(EXIT_FAILURE+1);
     }
-    if(typeNum == false) {
-        symTabNode->val_type = DOUBLE_TYPE;
-    }
+//    if(typeNum == false) {
+//        symTabNode->val_type = DOUBLE_TYPE;
+//    }
     symTabNode->val_type = typeNum;
     symTabNode->ident = ident;
     symTabNode->val = val;
@@ -232,9 +235,14 @@ RET_VAL evalSymNode(AST_NODE *node)
 
     RET_VAL result = eval(iter->val);
 
-    //if(node->symbolTable->val_type != node->data.number.type){
-    //    printf("WARNING: precision loss in the assignment for variable %s", node->symbolTable->ident);
-    //}
+    if(iter->val_type == INT_TYPE)
+    {
+        if(iter->val->data.number.type == DOUBLE_TYPE)
+        {
+            result.value = floor(result.value);
+            printf("WARNING: precision loss in the assignment for variable <%s> \n", node->data.symbol.ident);
+        }
+    }
 
     return result;
 

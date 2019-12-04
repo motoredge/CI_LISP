@@ -47,7 +47,6 @@ s_expr:
     }
     | symbol {
         fprintf(stderr, "yacc: s_expr ::= symbol\n");
-        yyerror("unexpected token");
         $$ = $1;
     }
     | LPAREN let_section s_expr RPAREN {
