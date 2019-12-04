@@ -230,8 +230,13 @@ RET_VAL evalSymNode(AST_NODE *node)
         return (RET_VAL) {INT_TYPE, NAN};
     }
 
-     RET_VAL result = eval(iter->val);
-     return result;
+    RET_VAL result = eval(iter->val);
+
+    //if(node->symbolTable->val_type != node->data.number.type){
+    //    printf("WARNING: precision loss in the assignment for variable %s", node->symbolTable->ident);
+    //}
+
+    return result;
 
 }
 
@@ -343,7 +348,7 @@ SYMBOL_TABLE_NODE * findSymbol(char *ident, AST_NODE *symNode)
         {
             return iter;
         }
-     iter = iter->next;
+        iter = iter->next;
     }
 
     return findSymbol(ident, symNode->parent);
