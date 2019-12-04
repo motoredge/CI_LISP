@@ -337,6 +337,9 @@ RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode)
         case HYPOT_OPER:
             result = HyptOperHelp(funcNode);
             break;
+        case PRINT_OPER:
+
+            break;
         default:
             yyerror("IN EvalFuncNode, THERE IS NO CASE TO POPULATE RESULT");
     }

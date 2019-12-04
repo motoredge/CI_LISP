@@ -129,7 +129,7 @@ typedef union YYSTYPE
     struct symbol_table_node *symTabNode;
 }
 /* Line 193 of yacc.c.  */
-#line 133 "/Users/edgar.ramirez136/CLionProjects/CI_LISP/cmake-build-debug/ciLispParser.c"
+#line 133 "/Users/edgar.ramirez136/Desktop/CI_LISP/cmake-build-debug/ciLispParser.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -142,7 +142,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 146 "/Users/edgar.ramirez136/CLionProjects/CI_LISP/cmake-build-debug/ciLispParser.c"
+#line 146 "/Users/edgar.ramirez136/Desktop/CI_LISP/cmake-build-debug/ciLispParser.c"
 
 #ifdef short
 # undef short
@@ -431,8 +431,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    23,    23,    32,    36,    39,    43,    48,    53,    59,
-      65,    69,    75,    79,    83,    89,    93,    99,   105,   109
+       0,    23,    23,    32,    36,    39,    43,    48,    52,    58,
+      64,    68,    74,    78,    82,    88,    92,    98,   104,   108
 };
 #endif
 
@@ -1395,13 +1395,12 @@ yyreduce:
 #line 48 "src/ciLisp.y"
     {
         fprintf(stderr, "yacc: s_expr ::= symbol\n");
-        yyerror("unexpected token");
         (yyval.astNode) = (yyvsp[(1) - (1)].astNode);
     ;}
     break;
 
   case 8:
-#line 53 "src/ciLisp.y"
+#line 52 "src/ciLisp.y"
     {
         fprintf(stderr, "yacc: s_expr ::= LPAREN let_section s_expr RPAREN\n");
         (yyval.astNode) = setSymbolTable((yyvsp[(2) - (4)].symTabNode), (yyvsp[(3) - (4)].astNode));
@@ -1409,7 +1408,7 @@ yyreduce:
     break;
 
   case 9:
-#line 59 "src/ciLisp.y"
+#line 58 "src/ciLisp.y"
     {
         fprintf(stderr, "yacc: s_expr ::= LPAREN let_list RPAREN\n");
         (yyval.symTabNode)=(yyvsp[(2) - (3)].symTabNode);
@@ -1417,7 +1416,7 @@ yyreduce:
     break;
 
   case 10:
-#line 65 "src/ciLisp.y"
+#line 64 "src/ciLisp.y"
     {
         fprintf(stderr, "yacc: s_expr ::= LPAREN FUNC expr RPAREN\n");
         (yyval.symTabNode)=(yyvsp[(2) - (2)].symTabNode);
@@ -1425,7 +1424,7 @@ yyreduce:
     break;
 
   case 11:
-#line 69 "src/ciLisp.y"
+#line 68 "src/ciLisp.y"
     {
         fprintf(stderr, "yacc: s_expr ::= let_list let_element\n");
         (yyval.symTabNode) = addSymbolToList((yyvsp[(1) - (2)].symTabNode),(yyvsp[(2) - (2)].symTabNode));
@@ -1433,7 +1432,7 @@ yyreduce:
     break;
 
   case 12:
-#line 75 "src/ciLisp.y"
+#line 74 "src/ciLisp.y"
     {
         fprintf(stderr, "yacc: let_element ::= LPAREN SYMBOL s_expr RPAREN\n");
         (yyval.symTabNode) = createSymbolTableNode((yyvsp[(2) - (4)].sval),(yyvsp[(3) - (4)].astNode), DOUBLE_TYPE);
@@ -1441,7 +1440,7 @@ yyreduce:
     break;
 
   case 13:
-#line 79 "src/ciLisp.y"
+#line 78 "src/ciLisp.y"
     {
         fprintf(stderr, "yacc: let_element ::= LPAREN SYMBOL s_expr RPAREN\n");
         (yyval.symTabNode) = createSymbolTableNode((yyvsp[(3) - (5)].sval),(yyvsp[(4) - (5)].astNode),INT_TYPE);
@@ -1449,7 +1448,7 @@ yyreduce:
     break;
 
   case 14:
-#line 83 "src/ciLisp.y"
+#line 82 "src/ciLisp.y"
     {
         fprintf(stderr, "yacc: let_element ::= LPAREN SYMBOL s_expr RPAREN\n");
         (yyval.symTabNode) = createSymbolTableNode((yyvsp[(3) - (5)].sval),(yyvsp[(4) - (5)].astNode),DOUBLE_TYPE);
@@ -1457,7 +1456,7 @@ yyreduce:
     break;
 
   case 15:
-#line 89 "src/ciLisp.y"
+#line 88 "src/ciLisp.y"
     {
         fprintf(stderr, "yacc: number ::= INT\n");
         (yyval.astNode) = createNumberNode((yyvsp[(1) - (1)].dval), INT_TYPE);
@@ -1465,7 +1464,7 @@ yyreduce:
     break;
 
   case 16:
-#line 93 "src/ciLisp.y"
+#line 92 "src/ciLisp.y"
     {
         fprintf(stderr, "yacc: number ::= DOUBLE\n");
         (yyval.astNode) = createNumberNode((yyvsp[(1) - (1)].dval), DOUBLE_TYPE);
@@ -1473,7 +1472,7 @@ yyreduce:
     break;
 
   case 17:
-#line 99 "src/ciLisp.y"
+#line 98 "src/ciLisp.y"
     {
         fprintf(stderr, "yacc: symbol ::= SYMBOL\n");
         (yyval.astNode) = createSymbolNode((yyvsp[(1) - (1)].sval));
@@ -1481,7 +1480,7 @@ yyreduce:
     break;
 
   case 18:
-#line 105 "src/ciLisp.y"
+#line 104 "src/ciLisp.y"
     {
         fprintf(stderr, "yacc: s_expr ::= LPAREN FUNC expr RPAREN\n");
         (yyval.astNode) = createFunctionNode((yyvsp[(2) - (4)].sval), (yyvsp[(3) - (4)].astNode), NULL);
@@ -1489,7 +1488,7 @@ yyreduce:
     break;
 
   case 19:
-#line 109 "src/ciLisp.y"
+#line 108 "src/ciLisp.y"
     {
         fprintf(stderr, "yacc: s_expr ::= LPAREN FUNC expr expr RPAREN\n");
         (yyval.astNode) = createFunctionNode((yyvsp[(2) - (5)].sval), (yyvsp[(3) - (5)].astNode), (yyvsp[(4) - (5)].astNode));
@@ -1498,7 +1497,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 1502 "/Users/edgar.ramirez136/CLionProjects/CI_LISP/cmake-build-debug/ciLispParser.c"
+#line 1501 "/Users/edgar.ramirez136/Desktop/CI_LISP/cmake-build-debug/ciLispParser.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1712,7 +1711,7 @@ yyreturn:
 }
 
 
-#line 113 "src/ciLisp.y"
+#line 112 "src/ciLisp.y"
 
 
 

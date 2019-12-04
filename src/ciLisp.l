@@ -11,7 +11,7 @@ letter [a-zA-Z]
 int_literal [+-]?{digit}+
 double_literal [+-]?{digit}+\.{digit}*
 symbol {letter}+
-func "neg"|"abs"|"exp"|"sqrt"|"add"|"sub"|"mult"|"div"|"remainder"|"log"|"pow"|"max"|"min"
+func "neg"|"abs"|"exp"|"sqrt"|"add"|"sub"|"mult"|"div"|"remainder"|"log"|"pow"|"max"|"min"|"exp2"|"cbrt"|"hypot"|"print"
 
 %%
 
