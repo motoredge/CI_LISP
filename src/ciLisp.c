@@ -80,7 +80,7 @@ void setParent(AST_NODE *parent, AST_NODE *child)
 }
 
 
-AST_NODE *createFunctionNode(char *funcName, AST_NODE *op1, AST_NODE *op2)
+AST_NODE *createFunctionNode(char *funcName, AST_NODE *opList)
 {
     AST_NODE *node;
     size_t nodeSize;
