@@ -19,18 +19,18 @@ func "neg"|"abs"|"exp"|"sqrt"|"add"|"sub"|"mult"|"div"|"remainder"|"log"|"pow"|"
     yylval.dval = strtod(yytext, NULL);
     fprintf(stderr, "lex: INT dval = %lf\n", yylval.dval);
     return INT_LITERAL;
-}
+    }
 
 {double_literal} {
     yylval.dval = strtod(yytext, NULL);
     fprintf(stderr, "lex: DOUBLE dval = %lf\n", yylval.dval);
     return DOUBLE_LITERAL;
-}
+    }
 
 "let" {
     fprintf(stderr, "lex: LET\n");
     return LET;
-}
+    }
 
 "quit" {
     fprintf(stderr, "lex: QUIT\n");
@@ -40,12 +40,12 @@ func "neg"|"abs"|"exp"|"sqrt"|"add"|"sub"|"mult"|"div"|"remainder"|"log"|"pow"|"
 "int" {
       fprintf(stderr, "lex: INT\n");
       return INT;
-      }
+    }
 
 "double" {
      fprintf(stderr, "lex: DOUBLE\n");
      return DOUBLE;
-     }
+    }
 
 {func} {
     yylval.sval = (char *) malloc(strlen(yytext)*sizeof(char)+1);

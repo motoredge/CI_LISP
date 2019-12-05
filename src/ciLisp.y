@@ -14,7 +14,7 @@
 %token <dval> INT_LITERAL DOUBLE_LITERAL
 %token LPAREN RPAREN EOL LET QUIT INT DOUBLE
 
-%type <astNode> s_expr f_expr number symbol
+%type <astNode> s_expr f_expr number symbol s_expr_list
 %type <symTabNode> let_section let_list let_element
 
 %%
@@ -34,6 +34,7 @@ s_expr:
         $$ = $1;
     }
     | f_expr {
+        fprintf(stderr, "yacc: s_expr ::= f_expr\n");
         $$ = $1;
     }
     | QUIT {
@@ -54,19 +55,28 @@ s_expr:
         $$ = setSymbolTable($2, $3);
     };
 
+s_expr_list:
+    s_expr  {
+        fprintf(stderr, "yacc: s_expr_list ::= s_expr\n");
+        $$ = $1
+    }
+    | s_expr s_expr_list {
+        fprintf(stderr, "yacc: s_expr_list ::= s_expr s_expr_list\n");
+    }
+
 let_section :
      LPAREN let_list RPAREN {
-        fprintf(stderr, "yacc: s_expr ::= LPAREN let_list RPAREN\n");
+        fprintf(stderr, "yacc: let_section ::= LPAREN let_list RPAREN\n");
         $$=$2;
     };
 
 let_list :
     LET let_element {
-        fprintf(stderr, "yacc: s_expr ::= LPAREN FUNC expr RPAREN\n");
+        fprintf(stderr, "yacc: let_list ::= LET let_element\n");
         $$=$2;
     }
     | let_list let_element {
-        fprintf(stderr, "yacc: s_expr ::= let_list let_element\n");
+        fprintf(stderr, "yacc: let_list ::= let_list let_element\n");
         $$ = addSymbolToList($1,$2);
     };
 
@@ -76,21 +86,21 @@ let_element :
         $$ = createSymbolTableNode($2,$3, DOUBLE_TYPE);
     }
     | LPAREN INT SYMBOL s_expr RPAREN {
-        fprintf(stderr, "yacc: let_element ::= LPAREN SYMBOL s_expr RPAREN\n");
+        fprintf(stderr, "yacc: let_element ::= LPAREN INT SYMBOL s_expr RPAREN\n");
         $$ = createSymbolTableNode($3,$4,INT_TYPE);
     }
     | LPAREN DOUBLE SYMBOL s_expr RPAREN {
-        fprintf(stderr, "yacc: let_element ::= LPAREN SYMBOL s_expr RPAREN\n");
+        fprintf(stderr, "yacc: let_element ::= LPAREN DOUBLE SYMBOL s_expr RPAREN\n");
         $$ = createSymbolTableNode($3,$4,DOUBLE_TYPE);
     };
 
 number:
     INT_LITERAL {
-        fprintf(stderr, "yacc: number ::= INT\n");
+        fprintf(stderr, "yacc: number ::= INT_LITERAL\n");
         $$ = createNumberNode($1, INT_TYPE);
     }
     | DOUBLE_LITERAL {
-        fprintf(stderr, "yacc: number ::= DOUBLE\n");
+        fprintf(stderr, "yacc: number ::= DOUBLE_LITERAL\n");
         $$ = createNumberNode($1, DOUBLE_TYPE);
     };
 
@@ -101,12 +111,16 @@ symbol:
     };
 
 f_expr:
-    LPAREN FUNC s_expr RPAREN {
-        fprintf(stderr, "yacc: s_expr ::= LPAREN FUNC expr RPAREN\n");
+    LPAREN FUNC s_expr_list RPAREN {
+    fprintf(stderr, "yacc: f_expr ::= LPAREN FUNC s_expr_list RPAREN\n");
+        $$ = createFunctionNode($2, $3, NULL);
+    }
+    | LPAREN FUNC s_expr RPAREN {
+        fprintf(stderr, "yacc: f_expr ::= LPAREN FUNC s_expr RPAREN\n");
         $$ = createFunctionNode($2, $3, NULL);
     }
     | LPAREN FUNC s_expr s_expr RPAREN {
-        fprintf(stderr, "yacc: s_expr ::= LPAREN FUNC expr expr RPAREN\n");
+        fprintf(stderr, "yacc: f_expr ::= LPAREN FUNC s_expr s_expr RPAREN\n");
         $$ = createFunctionNode($2, $3, $4);
     };
 %%
