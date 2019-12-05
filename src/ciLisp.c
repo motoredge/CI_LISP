@@ -213,6 +213,7 @@ RET_VAL eval(AST_NODE *node)
             break;
         case SYM_NODE_TYPE:
             result = evalSymNode(node);
+            break;
         default:
             yyerror("Invalid AST_NODE_TYPE, probably invalid writes somewhere!");
     }
@@ -341,7 +342,7 @@ RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode)
             result.value = eval(funcNode->op1).value;
             break;
         default:
-            yyerror("IN EvalFuncNode, THERE IS NO CASE TO POPULATE RESULT");
+            yyerror("In EvalFuncNode, THERE IS NO CASE TO POPULATE RESULT");
     }
     return result;
 }
