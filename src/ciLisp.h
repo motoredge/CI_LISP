@@ -85,8 +85,7 @@ typedef NUM_AST_NODE RET_VAL;
 typedef struct {
     OPER_TYPE oper;
     char* ident; // only needed for custom functions
-    struct ast_node *op1;
-    struct ast_node *op2;
+    struct ast_node *opList;
 } FUNC_AST_NODE;
 
 typedef struct symbol_ast_node {
@@ -104,6 +103,7 @@ typedef struct ast_node {
         FUNC_AST_NODE function;
         SYMBOL_AST_NODE symbol;
     } data;
+    struct ast_node *next;
 } AST_NODE;
 
 AST_NODE *createNumberNode(double value, NUM_TYPE type);
