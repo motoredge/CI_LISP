@@ -1,3 +1,6 @@
+//CiLisp
+//Edgar Ramirez
+
 #include "ciLisp.h"
 
 void yyerror(char *s) {
@@ -77,7 +80,7 @@ void setParent(AST_NODE *parent, AST_NODE *child)
 }
 
 
-AST_NODE *createFunctionNode(char *funcName, AST_NODE *op1, AST_NODE *op2)
+AST_NODE *createFunctionNode(char *funcName, AST_NODE *opList)
 {
     AST_NODE *node;
     size_t nodeSize;
@@ -95,10 +98,8 @@ AST_NODE *createFunctionNode(char *funcName, AST_NODE *op1, AST_NODE *op2)
     // For functions other than CUSTOM_OPER, you should free the funcName after you're assigned the OPER_TYPE.
     node->type = FUNC_NODE_TYPE;
     node->data.function.oper = resolveFunc(funcName);
-    node->data.function.op1 = op1;
-    node->data.function.op2 = op2;
-    setParent(node, op1);
-    setParent(node, op2);
+    node->data.function.opList = opList;
+    setParent(node, opList);
     return node;
 }
 
@@ -119,25 +120,21 @@ AST_NODE *createSymbolNode(char *ident)
 }
 
 
-AST_NODE *createSymbolTableNode(char *ident, AST_NODE *val, SYMBOL_TABLE_NODE *next)
+SYMBOL_TABLE_NODE *createSymbolTableNode(char *ident, AST_NODE *val, NUM_TYPE typeNum)
 {
-    AST_NODE *node;
-    size_t nodeSize;
+    SYMBOL_TABLE_NODE *symTabNode = calloc(1, sizeof(SYMBOL_TABLE_NODE));
+    if(symTabNode == NULL)
+    {
+        exit(EXIT_FAILURE+1);
+    }
 
-    // allocate space (or error)
-    nodeSize = sizeof(AST_NODE);
-    if ((node = calloc(nodeSize, 1)) == NULL)
-        yyerror("Memory allocation failed!");
+    symTabNode->val_type = typeNum;
+    symTabNode->ident = ident;
+    symTabNode->val = val;
 
-    node->type = SYM_NODE_TYPE;
-    node->symbolTable->ident = ident;
-    node->symbolTable->val = val;
-    node->symbolTable->next = next;
-
-    return node;
+    return symTabNode;
 }
 
-//check function
 AST_NODE *setSymbolTable(SYMBOL_TABLE_NODE *symbolTable, AST_NODE * node)
 {
     SYMBOL_TABLE_NODE **scope = &(node->symbolTable);
@@ -153,9 +150,29 @@ SYMBOL_TABLE_NODE *addSymbolToList(SYMBOL_TABLE_NODE *let_list, SYMBOL_TABLE_NOD
     if(let_list == NULL)
         return let_element;
 
-    let_element->next = let_list;
+    SYMBOL_TABLE_NODE *iter = let_list;
+    while (iter->next != NULL)
+    {
+        iter = iter->next;
+    }
+    iter->next = let_element;
 
-    return let_element;
+    return let_list;
+}
+
+AST_NODE *addOpToList (AST_NODE *op, AST_NODE *opList)
+{
+    if(opList == NULL)
+        return op;
+
+    AST_NODE *iter = opList;
+    while (iter->next != NULL)
+    {
+        iter = iter->next;
+    }
+    iter->next = op;
+
+    return opList;
 }
 // Called after execution is done on the base of the tree.
 // (see the program production in ciLisp.y)
@@ -169,8 +186,7 @@ void freeNode(AST_NODE *node)
     if (node->type == FUNC_NODE_TYPE)
     {
         // Recursive calls to free child nodes
-        freeNode(node->data.function.op1);
-        freeNode(node->data.function.op2);
+        freeNode(node->data.function.opList);
 
         // Free up identifier string if necessary
         if (node->data.function.oper == CUSTOM_OPER)
@@ -206,6 +222,7 @@ RET_VAL eval(AST_NODE *node)
             break;
         case SYM_NODE_TYPE:
             result = evalSymNode(node);
+            break;
         default:
             yyerror("Invalid AST_NODE_TYPE, probably invalid writes somewhere!");
     }
@@ -216,9 +233,23 @@ RET_VAL eval(AST_NODE *node)
 RET_VAL evalSymNode(AST_NODE *node)
 {
     if (!node)
-        return (RET_VAL){SYM_NODE_TYPE, NAN};
-    RET_VAL result = {SYM_NODE_TYPE, NAN};
+        return (RET_VAL){INT_TYPE, NAN};
 
+    SYMBOL_TABLE_NODE *iter = findSymbol(node->data.symbol.ident, node);
+
+    if(iter == NULL)
+    {
+        printf("ERROR");
+        return (RET_VAL) {INT_TYPE, NAN};
+    }
+
+    RET_VAL result = eval(iter->val);
+
+    if(iter->val_type == INT_TYPE && iter->val->data.number.type == DOUBLE_TYPE)
+    {
+        result.value = floor(result.value);
+        printf("WARNING: precision loss in the assignment for variable <%s> \n", node->data.symbol.ident);
+    }
 
     return result;
 
@@ -313,12 +344,33 @@ RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode)
         case HYPOT_OPER:
             result = HyptOperHelp(funcNode);
             break;
+        case PRINT_OPER:
+            result.value = eval(funcNode->op1).value;
+            break;
         default:
-            yyerror("IN EvalFuncNode, THERE IS NO CASE TO POPULATE RESULT");
+            yyerror("In EvalFuncNode, THERE IS NO CASE TO POPULATE RESULT");
     }
     return result;
 }
 
+SYMBOL_TABLE_NODE * findSymbol(char *ident, AST_NODE *symNode)
+{
+    if(symNode == NULL)
+        return NULL;
+
+    SYMBOL_TABLE_NODE *iter = symNode->symbolTable;
+
+    while(iter!= NULL)
+    {
+        if(strcmp(ident, iter->ident) == 0)
+        {
+            return iter;
+        }
+        iter = iter->next;
+    }
+
+    return findSymbol(ident, symNode->parent);
+}
 
 // prints the type and value of a RET_VAL
 void printRetVal(RET_VAL val)
@@ -548,7 +600,7 @@ RET_VAL CbrtOperHelp(FUNC_AST_NODE *funcNode)
     RET_VAL result = {INT_TYPE, NAN};
     RET_VAL op1 = eval(funcNode->op1);
     result.type = op1.type;
-    result.value = sqrt(op1.value);
+    result.value = cbrt(op1.value);
     return result;
 }
 
