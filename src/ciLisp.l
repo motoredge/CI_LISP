@@ -8,31 +8,43 @@
 
 digit [0-9]
 letter [a-zA-Z]
-int [+-]?{digit}+
-double [+-]?{digit}+\.{digit}*
+int_literal [+-]?{digit}+
+double_literal [+-]?{digit}+\.{digit}*
 symbol {letter}+
-func "neg"|"abs"|"exp"|"sqrt"|"add"|"sub"|"mult"|"div"|"remainder"|"log"|"pow"|"max"|"min"
+func "neg"|"abs"|"exp"|"sqrt"|"add"|"sub"|"mult"|"div"|"remainder"|"log"|"pow"|"max"|"min"|"exp2"|"cbrt"|"hypot"|"print"
 
 %%
 
-{int} {
+{int_literal} {
     yylval.dval = strtod(yytext, NULL);
     fprintf(stderr, "lex: INT dval = %lf\n", yylval.dval);
-    return INT;
-}
+    return INT_LITERAL;
+    }
 
-{double} {
+{double_literal} {
     yylval.dval = strtod(yytext, NULL);
     fprintf(stderr, "lex: DOUBLE dval = %lf\n", yylval.dval);
-    return DOUBLE;
-}
+    return DOUBLE_LITERAL;
+    }
 
 "let" {
+    fprintf(stderr, "lex: LET\n");
     return LET;
-}
+    }
 
 "quit" {
+    fprintf(stderr, "lex: QUIT\n");
     return QUIT;
+    }
+
+"int" {
+      fprintf(stderr, "lex: INT\n");
+      return INT;
+    }
+
+"double" {
+     fprintf(stderr, "lex: DOUBLE\n");
+     return DOUBLE;
     }
 
 {func} {
@@ -78,7 +90,7 @@ func "neg"|"abs"|"exp"|"sqrt"|"add"|"sub"|"mult"|"div"|"remainder"|"log"|"pow"|"
  */
 int main(void) {
 
-    //   freopen("/dev/null", "w", stderr); // except for this line that can be uncommented to throw away debug printouts
+    //freopen("/dev/null", "w", stderr); // except for this line that can be uncommented to throw away debug printouts
 
     char *s_expr_str = NULL;
     size_t s_expr_str_len = 0;
