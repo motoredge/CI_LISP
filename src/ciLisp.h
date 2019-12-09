@@ -122,24 +122,9 @@ RET_VAL eval(AST_NODE *node);
 RET_VAL evalNumNode(NUM_AST_NODE *numNode);
 RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode);
 RET_VAL evalSymNode(AST_NODE *node);
+RET_VAL evalOpList (AST_NODE *opList);
 SYMBOL_TABLE_NODE * findSymbol(char *ident, AST_NODE *symNode);
 
 void printRetVal(RET_VAL val);
-RET_VAL NegOperHelp(FUNC_AST_NODE *funcNode);
-RET_VAL AbsOperHelp(FUNC_AST_NODE *funcNode);
-RET_VAL ExpOperHelp(FUNC_AST_NODE *funcNode);
-RET_VAL SqrtOperHelp(FUNC_AST_NODE *funcNode);
-RET_VAL AddOperHelp(FUNC_AST_NODE *funcNode);
-RET_VAL SubOperHelp(FUNC_AST_NODE *funcNode);
-RET_VAL MultOperHelp(FUNC_AST_NODE *funcNode);
-RET_VAL DivOperHelp(FUNC_AST_NODE *funcNode);
-RET_VAL RemainOperHelp(FUNC_AST_NODE *funcNode);
-RET_VAL LogOperHelp(FUNC_AST_NODE *funcNode);
-RET_VAL PowOperHelp(FUNC_AST_NODE *funcNode);
-RET_VAL MaxOperHelp(FUNC_AST_NODE *funcNode);
-RET_VAL MinOperHelp(FUNC_AST_NODE *funcNode);
-RET_VAL Exp2OperHelp(FUNC_AST_NODE *funcNode);
-RET_VAL CbrtOperHelp(FUNC_AST_NODE *funcNode);
-RET_VAL HyptOperHelp(FUNC_AST_NODE *funcNode);
 
 #endif
