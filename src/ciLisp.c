@@ -266,8 +266,10 @@ RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode)
         return (RET_VAL){INT_TYPE, NAN};
 
     RET_VAL result = {INT_TYPE, NAN};
-    RET_VAL op1 = eval(funcNode->op1);
-    RET_VAL op2 = eval(funcNode->op2);
+    //
+    //need to figure out way to evaluate a AST_NODE "opList"
+    //
+    RET_VAL op = eval(funcNode->opList);
 
     // TODO populate result with the result of running the function on its operands.
     // SEE: AST_NODE, AST_NODE_TYPE, FUNC_AST_NODE
