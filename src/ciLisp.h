@@ -122,8 +122,22 @@ RET_VAL eval(AST_NODE *node);
 RET_VAL evalNumNode(NUM_AST_NODE *numNode);
 RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode);
 RET_VAL evalSymNode(AST_NODE *node);
-RET_VAL evalOpList (AST_NODE *opList);
 SYMBOL_TABLE_NODE * findSymbol(char *ident, AST_NODE *symNode);
+int evalOpList (AST_NODE *opList);
+RET_VAL singleOp (char *funcName, FUNC_AST_NODE *funcNode);
+RET_VAL doubleOps (char *funcName, FUNC_AST_NODE *funcNode);
+RET_VAL nOps (char *funcName, FUNC_AST_NODE *funcNode);
+RET_VAL addHelperFunc(FUNC_AST_NODE *funcNode);
+RET_VAL addRecursive(AST_NODE *opList, RET_VAL result);
+RET_VAL multHelperFunc(FUNC_AST_NODE *funcNode);
+RET_VAL multRecursive(AST_NODE *opList, RET_VAL result);
+RET_VAL minHelperFunc(FUNC_AST_NODE *funcNode);
+RET_VAL minRecur(AST_NODE *opList, RET_VAL result);
+RET_VAL maxHelperFunc(FUNC_AST_NODE *funcNode);
+RET_VAL maxRecur(AST_NODE *opList, RET_VAL result);
+RET_VAL hypotHelperFunc(FUNC_AST_NODE *funcNode);
+RET_VAL hypotRecur(AST_NODE *opList, RET_VAL result);
+
 
 void printRetVal(RET_VAL val);
 

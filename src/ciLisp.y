@@ -56,17 +56,25 @@ s_expr:
     };
 
 s_expr_list:
-    s_expr  {
+    /* EMPTY */ {
+        fprintf(stderr, "yacc: s_expr_list ::= <empty> \n");
+        $$ = NULL;
+    }
+    | s_expr {
         fprintf(stderr, "yacc: s_expr_list ::= s_expr\n");
-        $$ = $1
+        $$ = $1;
     }
     | s_expr s_expr_list {
         fprintf(stderr, "yacc: s_expr_list ::= s_expr s_expr_list\n");
         $$= addOpToList($1, $2);
-    }
+    };
 
 let_section :
-     LPAREN let_list RPAREN {
+    /* EMPTY */ {
+        fprintf(stderr, "yacc: let_section ::= <empty> \n");
+        $$ = NULL;
+    }
+     | LPAREN let_list RPAREN {
         fprintf(stderr, "yacc: let_section ::= LPAREN let_list RPAREN\n");
         $$=$2;
     };

@@ -41,25 +41,29 @@
    enum yytokentype {
      FUNC = 258,
      SYMBOL = 259,
-     INT = 260,
-     DOUBLE = 261,
+     INT_LITERAL = 260,
+     DOUBLE_LITERAL = 261,
      LPAREN = 262,
      RPAREN = 263,
      EOL = 264,
      LET = 265,
-     QUIT = 266
+     QUIT = 266,
+     INT = 267,
+     DOUBLE = 268
    };
 #endif
 /* Tokens.  */
 #define FUNC 258
 #define SYMBOL 259
-#define INT 260
-#define DOUBLE 261
+#define INT_LITERAL 260
+#define DOUBLE_LITERAL 261
 #define LPAREN 262
 #define RPAREN 263
 #define EOL 264
 #define LET 265
 #define QUIT 266
+#define INT 267
+#define DOUBLE 268
 
 
 
@@ -74,7 +78,7 @@ typedef union YYSTYPE
     struct symbol_table_node *symTabNode;
 }
 /* Line 1529 of yacc.c.  */
-#line 78 "/Users/edgar.ramirez136/CLionProjects/CI_LISP/cmake-build-debug/ciLispParser.h"
+#line 82 "/Users/edgar.ramirez136/Desktop/CI_LISP/cmake-build-debug/ciLispParser.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
