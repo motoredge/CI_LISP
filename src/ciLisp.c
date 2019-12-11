@@ -487,8 +487,13 @@ RET_VAL evalSymNode(AST_NODE *node)
 
     if(iter->val_type == INT_TYPE && iter->val->data.number.type == DOUBLE_TYPE)
     {
+        result.type = iter->val_type;
         result.value = floor(result.value);
         printf("WARNING: precision loss in the assignment for variable <%s> \n", node->data.symbol.ident);
+    }
+    if(iter->val_type == DOUBLE_TYPE && iter->val->data.number.type == INT_TYPE)
+    {
+        result.type = iter->val_type;
     }
 
     return result;

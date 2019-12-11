@@ -43,24 +43,27 @@ then be outputted into a RET_VAL of NUM_NODE.
         <INT>: 12
         > (add 2 (add 45.3 (sub 4 (mult 35 (cbrt 16)))))
         <DOUBLE>: -18.700000
-
+        > (add 1 (mult 3 (sub (exp 4) (min 2 3))))
+        <INT>: 157
+        > (abs (sub (min 2.3 5.6) (add (max 4.5 653.1) (remainder 36 6))))
+        <DOUBLE>: 650.800000
 
 
 TASK 3:
 Task 3 allows the user to change the type of value, by casting when using a let statement. If the value is the same as
 what is being cast then no changes should be done to the value. Although, if the value being cast is a double to an int,
-the value will be floored and lose the decimal values and will be rounded off. Nothing will be done if the value is an int
-and is being cast to double. It will just gain additional decimal values.NUM_NODE
+the value will be floored, lose the decimal values, and will be rounded off. Nothing will be done if the value is an int
+and is being cast to double. It will just gain additional decimal values.
 
     Sample Output:
         >((let (int a 1.25))(add a 1))
         WARNING: precision loss in the assignment for variable <a>
-        <DOUBLE>: 2.000000
+        <INT>: 2.000000
         > ((let (double a 2))(sub a 3))
-        <INT>: -1
+        <DOUBLE>: -1
         > ((let (int abc 3.5))(mult abc 16))
         WARNING: precision loss in the assignment for variable <abc>
-        <DOUBLE>: 48.000000
+        <INT>: 48.000000
 
 TASK 4:
 Task 4 will simply print the s_expression.
