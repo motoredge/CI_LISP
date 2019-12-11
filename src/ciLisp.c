@@ -462,14 +462,10 @@ RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode)
         case PRINT_OPER:
             result.type = eval(funcNode->opList).type;
             result.value = eval(funcNode->opList).value;
-            if((funcNode->opList))
-            {
-                result.value = eval(funcNode->opList).value;
-                funcNode->opList = funcNode->opList->next;
-                return result;
-            }
+
+            return result;
         default:
-            yyerror("In EvalFuncNode, THERE IS NO CASE TO POPULATE RESULT");
+            yyerror("IN EvalFuncNode, THERE IS NO CASE TO POPULATE RESULT");
     }
     return result;
 }
@@ -483,7 +479,7 @@ RET_VAL evalSymNode(AST_NODE *node)
 
     if(iter == NULL)
     {
-        printf("ERROR");
+        printf("ERROR: In evalSymNode\n");
         return (RET_VAL) {INT_TYPE, NAN};
     }
 

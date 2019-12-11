@@ -17,13 +17,13 @@ func "neg"|"abs"|"exp"|"sqrt"|"add"|"sub"|"mult"|"div"|"remainder"|"log"|"pow"|"
 
 {int_literal} {
     yylval.dval = strtod(yytext, NULL);
-    fprintf(stderr, "lex: INT dval = %lf\n", yylval.dval);
+    fprintf(stderr, "lex: INT_LITERAL dval = %lf\n", yylval.dval);
     return INT_LITERAL;
     }
 
 {double_literal} {
     yylval.dval = strtod(yytext, NULL);
-    fprintf(stderr, "lex: DOUBLE dval = %lf\n", yylval.dval);
+    fprintf(stderr, "lex: DOUBLE_LITERAL dval = %lf\n", yylval.dval);
     return DOUBLE_LITERAL;
     }
 
@@ -57,7 +57,7 @@ func "neg"|"abs"|"exp"|"sqrt"|"add"|"sub"|"mult"|"div"|"remainder"|"log"|"pow"|"
 {symbol} {
     yylval.sval = (char *) malloc(strlen(yytext)*sizeof(char)+1);
     strcpy(yylval.sval, yytext);
-    fprintf(stderr, "lex: LETTER sval = %s\n", yylval.sval);
+    fprintf(stderr, "lex: SYMBOL sval = %s\n", yylval.sval);
     return SYMBOL;
 }
 
