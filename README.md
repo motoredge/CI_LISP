@@ -2,6 +2,8 @@
 Edgar Ramirez
 CS 232 L
 
+ONLY COMPLETED TILL TASK 5
+
 TASK 1:
 Task 1 simply takes and implements Cambridge Polish Notation (CPN) and allows the user to input function names within
 parenthesis followed by one or two operands and evaluates them.
@@ -27,16 +29,20 @@ The value is then outputted into a NUM_NODE to be outputted by the program.
         > (min 54.64 34.64)
         <DOUBLE>: 34.640000
 
-TASK 2:
+TASK 2:(not functioning properly)
 Task 2 would further implement what was created in TASK 1 and allow the user to nest functions within more functions,
 following the correct syntax, of evaluating the values input inside the functions. The values that were evaluated would
-then be outputted into a RET_VAL of NUM_NODE.
+then be outputted into a RET_VAL of NUM_NODE. Along with this, more importantly the use of symbols will be implemented.
+(NOTE: let symbol functionality is not working for most cases. When debugging the symbol after the first does not match
+up with the value from the symbol table and leaves as NAN.)
 
     Sample Output:
         > (add 3 (sub 3 4))
         <INT>: 2
         > (mult 3 (min 3 4))
         <INT>: 9
+        > ((let (a 2))(sub a 3))
+        <DOUBLE>: -1.000000
         > (add ((let (a ((let (b 2)) (mult b (sqrt 10))))) (div a 2)) ((let (c 5)) (sqrt c)))
         <INT>: 5
         > (add 3 (mult 3 (cbrt 36)))
@@ -88,9 +94,8 @@ on the function will evaluate what it needs and place it into a return value. AD
 allow for multiple operands. It will also generate an error message when there are too little or too many opearands in the
 function. In the case of too many operands, it will take the first one and evaluate.
 
-(Note: I am having issues with the print case within evalFuncNode, that does not print out the multiple operands, it only
-prints out the first one.
-There is also an issue where if no operands are entered with the function, it just doesn't mention the function name.)
+(Note: I am having issues with the print case within evalFuncNode, that still prints out the RET_VAL result value.
+There is also an issue where if no operands are entered with the function, it doesn't mention the function name.)
 
     Sample Output:
         > (add 1 2 4.3 4 6 4.6)

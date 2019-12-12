@@ -460,10 +460,21 @@ RET_VAL evalFuncNode(FUNC_AST_NODE *funcNode)
         case HYPOT_OPER:
             return hypotHelperFunc(funcNode);
         case PRINT_OPER:
-            result.type = eval(funcNode->opList).type;
-            result.value = eval(funcNode->opList).value;
-
-            return result;
+            printf("=>");
+            AST_NODE *currNode = funcNode->opList;
+            while (currNode != NULL)
+            {
+                if(eval(currNode).type == INT_TYPE)
+                {
+                    printf("%.0lf ", eval(currNode).value);
+                }
+                else{
+                    printf("%lf ", eval(currNode).value);
+                }
+                currNode = currNode->next;
+            }
+            printf("\n");
+            break;
         default:
             yyerror("IN EvalFuncNode, THERE IS NO CASE TO POPULATE RESULT");
     }
